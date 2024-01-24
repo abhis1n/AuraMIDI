@@ -17,11 +17,12 @@ static void flip(cv::Mat& img)
 	img = imgtemp;
 }
 
-static void hsv(cv::Mat& img)
+static void erosion(cv::Mat& src, cv::Mat& erosion_dst)
 {
-	cv::Mat imgtemp;
-	cv::cvtColor(img, imgtemp, cv::COLOR_BGR2HSV);
-	img = imgtemp;
+	int erosion_type = 0; //erosion_type = MORPH_RECT
+	cv::Mat element = cv::getStructuringElement(0,
+												cv::Size(5, 5));
+	cv::erode(src, erosion_dst, element);
 }
 
 int main() {
@@ -47,19 +48,37 @@ int main() {
 	}
 
 	// Creating the trackbars needed for adjusting the marker colour
-	cv::namedWindow("Color detectors");
-	createAndSetTrackbar("Upper Hue", "Color detectors", obj[0], 180);
-	createAndSetTrackbar("Upper Saturation", "Color detectors", obj[1], 255);
-	createAndSetTrackbar("Upper Value", "Color detectors", obj[2], 255);
-	createAndSetTrackbar("Lower Hue", "Color detectors", obj[3], 180);
-	createAndSetTrackbar("Lower Saturation", "Color detectors", obj[4], 255);
-	createAndSetTrackbar("Lower Value", "Color detectors", obj[5], 255);
+	cv::namedWindow("Set HSV");
+	createAndSetTrackbar("Upper Hue", "Set HSV", obj[0], 180);
+	createAndSetTrackbar("Upper Saturation", "Set HSV", obj[1], 255);
+	createAndSetTrackbar("Upper Value", "Set HSV", obj[2], 255);
+	createAndSetTrackbar("Lower Hue", "Set HSV", obj[3], 180);
+	createAndSetTrackbar("Lower Saturation", "Set HSV", obj[4], 255);
+	createAndSetTrackbar("Lower Value", "Set HSV", obj[5], 255);
 
 	while (true)
 	{
 		cap >> image;
 		flip(image);
-		hsv(image);
+		cv::Mat hsv;
+		cv::Mat mask;
+		cv::Mat maskerode;
+		cv::cvtColor(image, hsv, cv::COLOR_BGR2HSV);
+
+		int u_hue = cv::getTrackbarPos("Upper Hue", "Set HSV");
+		int u_saturation = cv::getTrackbarPos("Upper Saturation", "Set HSV");
+		int u_value = cv::getTrackbarPos("Upper Value", "Set HSV");
+		int l_hue = cv::getTrackbarPos("Lower Hue", "Set HSV");
+		int l_saturation = cv::getTrackbarPos("Lower Saturation", "Set HSV");
+		int l_value = cv::getTrackbarPos("Lower Value", "Set HSV");
+		cv::Scalar upperHsv(u_hue, u_saturation, u_value);
+		cv::Scalar lowerHsv(l_hue, l_saturation, l_value);
+
+		cv::inRange(hsv, lowerHsv, upperHsv, mask);
+		erosion(mask, maskerode);
+
+		imshow("Display Mask", mask);
+		imshow("Display MaskErode", maskerode);
 		imshow("Display Cam", image);
 		int key = (cv::waitKey(25) & 0xFF);
 		if (key == 'q')
