@@ -17,6 +17,13 @@ static void flip(cv::Mat& img)
 	img = imgtemp;
 }
 
+static void hsv(cv::Mat& img)
+{
+	cv::Mat imgtemp;
+	cv::cvtColor(img, imgtemp, cv::COLOR_BGR2HSV);
+	img = imgtemp;
+}
+
 int main() {
 	cv::Mat image;
 	cv::VideoCapture cap(0);
@@ -52,6 +59,7 @@ int main() {
 	{
 		cap >> image;
 		flip(image);
+		hsv(image);
 		imshow("Display Cam", image);
 		int key = (cv::waitKey(25) & 0xFF);
 		if (key == 'q')
