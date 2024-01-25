@@ -12,17 +12,50 @@ static void createAndSetTrackbar(const cv::String& trackbarname, const cv::Strin
 
 static void flip(cv::Mat& img)
 {
-	cv::Mat imgtemp;
-	cv::flip(img, imgtemp, 1);
-	img = imgtemp;
+	cv::Mat temp;
+	cv::flip(img, temp, 1);
+	img = temp;
 }
 
-static void erosion(cv::Mat& src, cv::Mat& erosion_dst)
+static void bgrToHsv(cv::Mat& img)
 {
+	cv::Mat temp;
+	cv::cvtColor(img, temp, cv::COLOR_BGR2HSV);
+	img = temp;
+}
+
+static void threshold(cv::Mat& img, cv::Scalar& lowerHsv, cv::Scalar& upperHsv)
+{
+	cv::Mat temp;
+	cv::inRange(img, lowerHsv, upperHsv, temp);
+	img = temp;
+}
+
+static void erosion(cv::Mat& img)
+{
+	cv::Mat temp;
 	int erosion_type = 0; //erosion_type = MORPH_RECT
-	cv::Mat element = cv::getStructuringElement(0,
-												cv::Size(5, 5));
-	cv::erode(src, erosion_dst, element);
+	cv::Mat element = cv::getStructuringElement(erosion_type, cv::Size(5, 5));
+	cv::erode(img, temp, element);
+	img = temp;
+}
+
+static void morphology(cv::Mat& img)
+{
+	cv::Mat temp;
+	int morph_type = 0; //morph_type = Opening
+	cv::Mat element = cv::getStructuringElement(morph_type, cv::Size(5, 5));
+	cv::morphologyEx(img, temp, morph_type, element);
+	img = temp;
+}
+
+static void dilation(cv::Mat& img)
+{
+	cv::Mat temp;
+	int dilation_type = 0; //dilation_type = MORPH_RECT
+	cv::Mat element = cv::getStructuringElement(dilation_type, cv::Size(5, 5));
+	cv::dilate(img, temp, element);
+	img = temp;
 }
 
 int main() {
@@ -60,10 +93,8 @@ int main() {
 	{
 		cap >> image;
 		flip(image);
-		cv::Mat hsv;
 		cv::Mat mask;
-		cv::Mat maskerode;
-		cv::cvtColor(image, hsv, cv::COLOR_BGR2HSV);
+		mask = image;
 
 		int u_hue = cv::getTrackbarPos("Upper Hue", "Set HSV");
 		int u_saturation = cv::getTrackbarPos("Upper Saturation", "Set HSV");
@@ -74,11 +105,13 @@ int main() {
 		cv::Scalar upperHsv(u_hue, u_saturation, u_value);
 		cv::Scalar lowerHsv(l_hue, l_saturation, l_value);
 
-		cv::inRange(hsv, lowerHsv, upperHsv, mask);
-		erosion(mask, maskerode);
+		bgrToHsv(mask);
+		threshold(mask, lowerHsv, upperHsv);
+		erosion(mask);
+		morphology(mask);
+		dilation(mask);
 
 		imshow("Display Mask", mask);
-		imshow("Display MaskErode", maskerode);
 		imshow("Display Cam", image);
 		int key = (cv::waitKey(25) & 0xFF);
 		if (key == 'q')
