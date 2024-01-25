@@ -10,52 +10,17 @@ static void createAndSetTrackbar(const cv::String& trackbarname, const cv::Strin
 	cv::setTrackbarPos(trackbarname, winname, value);
 }
 
-static void flip(cv::Mat& img)
+static int contourSort(std::vector<std::vector<cv::Point>>& contours)
 {
-	cv::Mat temp;
-	cv::flip(img, temp, 1);
-	img = temp;
-}
-
-static void bgrToHsv(cv::Mat& img)
-{
-	cv::Mat temp;
-	cv::cvtColor(img, temp, cv::COLOR_BGR2HSV);
-	img = temp;
-}
-
-static void threshold(cv::Mat& img, cv::Scalar& lowerHsv, cv::Scalar& upperHsv)
-{
-	cv::Mat temp;
-	cv::inRange(img, lowerHsv, upperHsv, temp);
-	img = temp;
-}
-
-static void erosion(cv::Mat& img)
-{
-	cv::Mat temp;
-	int erosion_type = 0; //erosion_type = MORPH_RECT
-	cv::Mat element = cv::getStructuringElement(erosion_type, cv::Size(5, 5));
-	cv::erode(img, temp, element);
-	img = temp;
-}
-
-static void morphology(cv::Mat& img)
-{
-	cv::Mat temp;
-	int morph_type = 0; //morph_type = Opening
-	cv::Mat element = cv::getStructuringElement(morph_type, cv::Size(5, 5));
-	cv::morphologyEx(img, temp, morph_type, element);
-	img = temp;
-}
-
-static void dilation(cv::Mat& img)
-{
-	cv::Mat temp;
-	int dilation_type = 0; //dilation_type = MORPH_RECT
-	cv::Mat element = cv::getStructuringElement(dilation_type, cv::Size(5, 5));
-	cv::dilate(img, temp, element);
-	img = temp;
+	int maxAreaIndex = 0;
+	for (int i = 0; i < contours.size(); i++)
+	{
+		if (cv::contourArea(contours[i]) > cv::contourArea(contours[maxAreaIndex]))
+		{
+			maxAreaIndex = i;
+		}
+	}
+	return maxAreaIndex;
 }
 
 int main() {
@@ -94,8 +59,9 @@ int main() {
 	while (true)
 	{
 		cap >> image;
-		flip(image);
-		mask = image;
+		cap >> mask;
+		cv::flip(image, image, 1);
+		cv::flip(mask, mask, 1);
 
 		cv::Scalar grey(122, 122, 122);
 		cv::Scalar green(0, 256, 0);
@@ -125,14 +91,33 @@ int main() {
 		int l_hue = cv::getTrackbarPos("Lower Hue", "Set HSV");
 		int l_saturation = cv::getTrackbarPos("Lower Saturation", "Set HSV");
 		int l_value = cv::getTrackbarPos("Lower Value", "Set HSV");
+
 		cv::Scalar upperHsv(u_hue, u_saturation, u_value);
 		cv::Scalar lowerHsv(l_hue, l_saturation, l_value);
+		cv::Mat element = cv::getStructuringElement(0, cv::Size(5, 5));
 
-		bgrToHsv(mask);
-		threshold(mask, lowerHsv, upperHsv);
-		erosion(mask);
-		morphology(mask);
-		dilation(mask);
+		cv::cvtColor(mask, mask, cv::COLOR_BGR2HSV);
+		cv::inRange(mask, lowerHsv, upperHsv, mask);
+
+		//erosion_type = MORPH_RECT
+		cv::erode(mask, mask, element);
+
+		//morph_type = Opening
+		cv::morphologyEx(mask, mask, 0, element);
+
+		//dilation_type = MORPH_RECT
+		cv::dilate(mask, mask, element);
+
+		// Find contours
+		std::vector<std::vector<cv::Point>> contours;
+		cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+		if (contours.size() > 0)
+		{
+			std::cout << "found " << contours.size() << " contours\n";
+			int contour_index = contourSort(contours);
+			std::vector<cv::Point> cnt = contours[contour_index];
+		}
 
 		// Display
 		imshow("Display Mask", mask);
