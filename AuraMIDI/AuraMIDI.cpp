@@ -60,6 +60,7 @@ static void dilation(cv::Mat& img)
 
 int main() {
 	cv::Mat image;
+	cv::Mat mask;
 	cv::VideoCapture cap(0);
 
 	if (!cap.isOpened())
@@ -67,6 +68,7 @@ int main() {
 		std::cout << "Cannot open camera";
 	}
 
+	// Extracting hsv from json file
 	std::ifstream f("object.json");
 	Json::Reader reader;
 	Json::Value data;
@@ -93,9 +95,30 @@ int main() {
 	{
 		cap >> image;
 		flip(image);
-		cv::Mat mask;
 		mask = image;
 
+		cv::Scalar grey(122, 122, 122);
+		cv::Scalar green(0, 256, 0);
+		cv::Scalar red(0, 0, 256);
+
+		std::vector<cv::Scalar> patColors(5, grey);
+		std::vector<cv::Scalar> trkColors(4, grey);
+
+		// Adding the colour buttons to the live frame for colour access
+		// Patterns
+		cv::rectangle(image, cv::Point(80, 1), cv::Point(160, 80), patColors[0], -1);
+		cv::rectangle(image, cv::Point(175, 1), cv::Point(255, 80), patColors[1], -1);
+		cv::rectangle(image, cv::Point(270, 1), cv::Point(350, 80), patColors[2], -1);
+		cv::rectangle(image, cv::Point(365, 1), cv::Point(445, 80), patColors[3], -1);
+		cv::rectangle(image, cv::Point(460, 1), cv::Point(540, 80), patColors[4], -1);
+
+		// Tracks
+		cv::rectangle(image, cv::Point(1, 80), cv::Point(80, 160), trkColors[0], -1);
+		cv::rectangle(image, cv::Point(1, 175), cv::Point(80, 255), trkColors[1], -1);
+		cv::rectangle(image, cv::Point(1, 270), cv::Point(80, 350), trkColors[2], -1);
+		cv::rectangle(image, cv::Point(1, 365), cv::Point(80, 445), trkColors[3], -1);
+
+		// Image Processing
 		int u_hue = cv::getTrackbarPos("Upper Hue", "Set HSV");
 		int u_saturation = cv::getTrackbarPos("Upper Saturation", "Set HSV");
 		int u_value = cv::getTrackbarPos("Upper Value", "Set HSV");
@@ -111,6 +134,7 @@ int main() {
 		morphology(mask);
 		dilation(mask);
 
+		// Display
 		imshow("Display Mask", mask);
 		imshow("Display Cam", image);
 		int key = (cv::waitKey(25) & 0xFF);
