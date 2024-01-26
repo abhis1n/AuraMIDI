@@ -104,6 +104,18 @@ int main() {
 		cv::rectangle(image, cv::Point(1, 270), cv::Point(80, 350), trkColor[2], -1);
 		cv::rectangle(image, cv::Point(1, 365), cv::Point(80, 445), trkColor[3], -1);
 
+		// Tile Text
+		cv::putText(image, "PAT 1", cv::Point(96, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+		cv::putText(image, "PAT 2", cv::Point(190, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+		cv::putText(image, "PAT 3", cv::Point(290, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+		cv::putText(image, "PAT 4", cv::Point(380, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+		cv::putText(image, "MUTE", cv::Point(480, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+
+		cv::putText(image, "TRACK 1", cv::Point(8, 115), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+		cv::putText(image, "TRACK 2", cv::Point(8, 210), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+		cv::putText(image, "TRACK 3", cv::Point(8, 305), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+		cv::putText(image, "TRACK 4", cv::Point(8, 400), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
+
 		// Image Processing
 		int u_hue = cv::getTrackbarPos("Upper Hue", "Set HSV");
 		int u_saturation = cv::getTrackbarPos("Upper Saturation", "Set HSV");
@@ -189,18 +201,6 @@ int main() {
 				}
 			}
 		}
-
-		// Tile Text
-		cv::putText(image, "PAT 1", cv::Point(96, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-		cv::putText(image, "PAT 2", cv::Point(190, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-		cv::putText(image, "PAT 3", cv::Point(290, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-		cv::putText(image, "PAT 4", cv::Point(380, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-		cv::putText(image, "MUTE", cv::Point(480, 33), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-
-		cv::putText(image, "TRACK 1", cv::Point(8, 115), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-		cv::putText(image, "TRACK 2", cv::Point(8, 210), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-		cv::putText(image, "TRACK 3", cv::Point(8, 305), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
-		cv::putText(image, "TRACK 4", cv::Point(8, 400), cv::FONT_HERSHEY_SIMPLEX, 0.5, white, 1, cv::LINE_AA);
 
 		// Display
 		imshow("Display Mask", mask);
