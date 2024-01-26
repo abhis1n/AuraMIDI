@@ -128,6 +128,7 @@ int main() {
 	cv::Mat mask;
 	cv::VideoCapture cap(0);
 	int track = 80;
+	bool hasPlayed = false;
 
 	if (!cap.isOpened())
 	{
@@ -281,29 +282,57 @@ int main() {
 					setGreen(trkColor, 3);
 				}
 			}
-			if (center.y <= 80)
+			else if (center.y <= 80)
 			{
 				if ((80 <= center.x) && (center.x <= 160))
 				{
 					setGreen(patColor, 0);
-					playNote(midiout, track+1);
+					if (hasPlayed == false)
+					{
+						hasPlayed = true;
+						playNote(midiout, track + 1);
+					}
 				}
 				else if ((175 <= center.x) && (center.x <= 255))
 				{
 					setGreen(patColor, 1);
+					if (hasPlayed == false)
+					{
+						hasPlayed = true;
+						playNote(midiout, track + 2);
+					}
 				}
 				else if ((270 <= center.x) && (center.x <= 350))
 				{
 					setGreen(patColor, 2);
+					if (hasPlayed == false)
+					{
+						hasPlayed = true;
+						playNote(midiout, track + 3);
+					}
 				}
 				else if ((365 <= center.x) && (center.x <= 445))
 				{
 					setGreen(patColor, 3);
+					if (hasPlayed == false)
+					{
+						hasPlayed = true;
+						playNote(midiout, track + 4);
+					}
 				}
 				else if ((460 <= center.x) && (center.x <= 540))
 				{
 					setGreen(patColor, 4, true);
+					if (hasPlayed == false)
+					{
+						hasPlayed = true;
+						playNote(midiout, track + 9);
+					}
 				}
+			}
+			else
+			{
+				hasPlayed = false;
 			}
 		}
 
@@ -311,6 +340,7 @@ int main() {
 		imshow("Display Mask", mask);
 		imshow("Display Cam", image);
 		int key = (cv::waitKey(25) & 0xFF);
+		// Press 'q' to quit
 		if (key == 'q')
 		{
 			break;
