@@ -14,7 +14,7 @@
 #define SLEEP( milliseconds ) usleep( (unsigned long) (milliseconds * 1000.0) )
 #endif
 
-bool chooseMidiPort(RtMidiOut* rtmidi)
+static bool chooseMidiPort(RtMidiOut* rtmidi)
 {
 	std::string portName;
 	unsigned int i = 0, nPorts = rtmidi->getPortCount();
@@ -44,7 +44,7 @@ bool chooseMidiPort(RtMidiOut* rtmidi)
 	return true;
 }
 
-RtMidi::Api chooseMidiApi()
+static RtMidi::Api chooseMidiApi()
 {
 	std::vector< RtMidi::Api > apis;
 	RtMidi::getCompiledApi(apis);
