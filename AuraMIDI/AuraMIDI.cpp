@@ -3,7 +3,6 @@
 #include <json/json.h>
 #include <fstream>
 #include <vector>
-#include <set>
 #include <RtMidi.h>
 
 // Platform-dependent sleep routines.
