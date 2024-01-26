@@ -10,7 +10,7 @@ static void createAndSetTrackbar(const cv::String& trackbarname, const cv::Strin
 	cv::setTrackbarPos(trackbarname, winname, value);
 }
 
-static int contourSort(std::vector<std::vector<cv::Point>>& contours)
+static int maxContour(std::vector<std::vector<cv::Point>>& contours)
 {
 	int maxAreaIndex = 0;
 	for (int i = 0; i < contours.size(); i++)
@@ -114,9 +114,13 @@ int main() {
 
 		if (contours.size() > 0)
 		{
-			std::cout << "found " << contours.size() << " contours\n";
-			int contour_index = contourSort(contours);
+			int contour_index = maxContour(contours);
 			std::vector<cv::Point> cnt = contours[contour_index];
+
+			cv::Point2f center;
+			float radius;
+			cv::minEnclosingCircle(cnt, center, radius);
+			cv::circle(image, center, int(radius), cv::Scalar(0, 255, 255), 2);
 		}
 
 		// Display
