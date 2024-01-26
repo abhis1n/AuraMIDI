@@ -154,8 +154,6 @@ int main() {
 		error.printMessage();
 	}
 
-	playNote(midiout, 60);
-
 	// Extracting hsv from json file
 	std::ifstream f("object.json");
 	Json::Reader reader;
