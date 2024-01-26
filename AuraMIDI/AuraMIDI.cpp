@@ -3,6 +3,88 @@
 #include <json/json.h>
 #include <fstream>
 #include <vector>
+#include <set>
+#include <RtMidi.h>
+
+// Platform-dependent sleep routines.
+#if defined(_WIN32)
+#include <windows.h>
+#define SLEEP( milliseconds ) Sleep( (DWORD) milliseconds ) 
+#else // Unix variants
+#include <unistd.h>
+#define SLEEP( milliseconds ) usleep( (unsigned long) (milliseconds * 1000.0) )
+#endif
+
+bool chooseMidiPort(RtMidiOut* rtmidi)
+{
+	std::string portName;
+	unsigned int i = 0, nPorts = rtmidi->getPortCount();
+	if (nPorts == 0) {
+		std::cout << "No output ports available!" << std::endl;
+		return false;
+	}
+
+	if (nPorts == 1) {
+		std::cout << "\nOpening " << rtmidi->getPortName() << std::endl;
+	}
+	else {
+		for (i = 0; i < nPorts; i++) {
+			portName = rtmidi->getPortName(i);
+			std::cout << "  Output port #" << i << ": " << portName << '\n';
+		}
+
+		do {
+			std::cout << "\nChoose a port number: ";
+			std::cin >> i;
+		} while (i >= nPorts);
+	}
+
+	std::cout << "\n";
+	rtmidi->openPort(i);
+
+	return true;
+}
+
+RtMidi::Api chooseMidiApi()
+{
+	std::vector< RtMidi::Api > apis;
+	RtMidi::getCompiledApi(apis);
+
+	if (apis.size() <= 1)
+		return RtMidi::Api::UNSPECIFIED;
+
+	std::cout << "\nAPIs\n  API #0: unspecified / default\n";
+	for (size_t n = 0; n < apis.size(); n++)
+		std::cout << "  API #" << apis[n] << ": " << RtMidi::getApiDisplayName(apis[n]) << "\n";
+
+	std::cout << "\nChoose an API number: ";
+	unsigned int i;
+	std::cin >> i;
+
+	std::string dummy;
+	std::getline(std::cin, dummy);  // used to clear out stdin
+
+	return static_cast<RtMidi::Api>(i);
+}
+
+static void playNote(RtMidiOut* midiout, int note)
+{
+	std::vector<unsigned char> message(3);
+
+	// Note On: 144, 64, 90
+	message[0] = 144;
+	message[1] = note;
+	message[2] = 90;
+	midiout->sendMessage(&message);
+
+	SLEEP(1);
+
+	// Note Off: 128, 64, 0
+	message[0] = 128;
+	message[1] = note;
+	message[2] = 0;
+	midiout->sendMessage(&message);
+}
 
 static void createAndSetTrackbar(const cv::String& trackbarname, const cv::String& winname, int value, int count)
 {
@@ -51,6 +133,28 @@ int main() {
 	{
 		std::cout << "Cannot open camera";
 	}
+
+	RtMidiOut* midiout = 0;
+	std::vector<unsigned char> message;
+
+	// RtMidiOut constructor
+	try {
+		midiout = new RtMidiOut(chooseMidiApi());
+	}
+	catch (RtMidiError& error) {
+		error.printMessage();
+		exit(EXIT_FAILURE);
+	}
+
+	// Call function to select port.
+	try {
+		if (chooseMidiPort(midiout) == false) std::cout << "Cannot open port";
+	}
+	catch (RtMidiError& error) {
+		error.printMessage();
+	}
+
+	playNote(midiout, 60);
 
 	// Extracting hsv from json file
 	std::ifstream f("object.json");
@@ -182,6 +286,7 @@ int main() {
 				if ((80 <= center.x) && (center.x <= 160))
 				{
 					setGreen(patColor, 0);
+					playNote(midiout, track+1);
 				}
 				else if ((175 <= center.x) && (center.x <= 255))
 				{
