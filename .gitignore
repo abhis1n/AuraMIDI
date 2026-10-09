@@ -1,2 +1,5 @@
 .vs/
 *.vcxproj.user
+
+# Visual Studio generated intermediate files
+/AuraMIDI/
