@@ -210,7 +210,7 @@ int main() {
 	while (true)
 	{
 		cap >> image;
-		cap >> mask;
+		image.copyTo(mask);
 		cv::flip(image, image, 1);
 		cv::flip(mask, mask, 1);
 
