@@ -145,6 +145,10 @@
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)third_party\opencv\bin\opencv_world500.dll" "$(OutDir)"
+xcopy /E /I /Y "$(ProjectDir)assets" "$(OutDir)assets"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AuraMIDI.cpp" />
