@@ -150,10 +150,17 @@ int main() {
 
 	// Call function to select port.
 	try {
-		if (chooseMidiPort(midiout) == false) std::cout << "Cannot open port";
+		if (chooseMidiPort(midiout) == false)
+		{
+			std::cerr << "Error: No MIDI output ports available" << std::endl;
+			delete midiout;
+			return EXIT_FAILURE;
+		}
 	}
 	catch (RtMidiError& error) {
 		error.printMessage();
+		delete midiout;
+		return EXIT_FAILURE;
 	}
 
 	// Extracting hsv from json file
