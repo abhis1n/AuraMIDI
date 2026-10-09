@@ -156,10 +156,40 @@ int main() {
 
 	// Extracting hsv from json file
 	std::ifstream f("assets/object.json");
+	if (!f.is_open())
+	{
+		std::cerr << "Error: Could not open 'assets/object.json'" << std::endl;
+		delete midiout;
+		return EXIT_FAILURE;
+	}
+
 	nlohmann::json data;
-	f >> data;
+	try
+	{
+		f >> data;
+	}
+	catch (const nlohmann::json::parse_error& e)
+	{
+		std::cerr << "Error: Failed to parse 'assets/object.json': " << e.what() << std::endl;
+		delete midiout;
+		return EXIT_FAILURE;
+	}
+
+	if (!data.contains("highlighter") || !data["highlighter"].is_array())
+	{
+		std::cerr << "Error: 'assets/object.json' is missing a valid 'highlighter' array" << std::endl;
+		delete midiout;
+		return EXIT_FAILURE;
+	}
 
 	std::vector<int> obj = data["highlighter"].get<std::vector<int>>();
+
+	if (obj.size() < 6)
+	{
+		std::cerr << "Error: 'highlighter' array must have at least 6 elements (got " << obj.size() << ")" << std::endl;
+		delete midiout;
+		return EXIT_FAILURE;
+	}
 
 	// Creating the trackbars needed for adjusting the marker colour
 	cv::namedWindow("Set HSV");
