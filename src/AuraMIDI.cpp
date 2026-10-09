@@ -1,6 +1,6 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 #include <fstream>
 #include <vector>
 #include <RtMidi.h>
@@ -155,18 +155,11 @@ int main() {
 	}
 
 	// Extracting hsv from json file
-	std::ifstream f("object.json");
-	Json::Reader reader;
-	Json::Value data;
-	reader.parse(f, data);
+	std::ifstream f("assets/object.json");
+	nlohmann::json data;
+	f >> data;
 
-	Json::Value jsonobj = data["highlighter"];
-	std::vector<int> obj(6, 0);
-
-	for (int i = 0; i < 6; i++)
-	{
-		obj[i] = jsonobj[i].asInt();
-	}
+	std::vector<int> obj = data["highlighter"].get<std::vector<int>>();
 
 	// Creating the trackbars needed for adjusting the marker colour
 	cv::namedWindow("Set HSV");
