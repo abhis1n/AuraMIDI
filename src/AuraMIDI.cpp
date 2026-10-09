@@ -1,5 +1,6 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <opencv2/geometry/2d.hpp>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <vector>
