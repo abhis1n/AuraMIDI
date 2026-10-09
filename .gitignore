@@ -3,3 +3,6 @@
 
 # Visual Studio generated intermediate files
 /AuraMIDI/
+
+# Build files
+/x64/
