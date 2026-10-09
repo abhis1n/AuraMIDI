@@ -95,7 +95,7 @@ static void createAndSetTrackbar(const cv::String& trackbarname, const cv::Strin
 static int maxContour(std::vector<std::vector<cv::Point>>& contours)
 {
 	int maxAreaIndex = 0;
-	for (int i = 0; i < contours.size(); i++)
+	for (size_t i = 0; i < contours.size(); i++)
 	{
 		if (cv::contourArea(contours[i]) > cv::contourArea(contours[maxAreaIndex]))
 		{
@@ -111,7 +111,7 @@ static void setGreen(std::vector<cv::Scalar>& tileColor, int index, bool isMute 
 	cv::Scalar green(0, 255, 0);
 	cv::Scalar red(0, 0, 255);
 
-	for (int i = 0; i < tileColor.size(); i++)
+	for (size_t i = 0; i < tileColor.size(); i++)
 	{
 		tileColor[i] = grey;
 	}
