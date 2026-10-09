@@ -369,6 +369,7 @@ int main() {
 
 	cap.release();
 	cv::destroyAllWindows();
+	delete midiout;
 
 	return 0;
 }
