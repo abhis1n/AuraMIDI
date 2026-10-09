@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="AuraMIDI.vcxproj" Id="ab7f61ec-bb35-4e03-9df9-9f6cc60ddbe7" />
+</Solution>
