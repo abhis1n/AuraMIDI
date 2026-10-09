@@ -107,8 +107,8 @@ static int maxContour(std::vector<std::vector<cv::Point>>& contours)
 static void setGreen(std::vector<cv::Scalar>& tileColor, int index, bool isMute = false)
 {
 	cv::Scalar grey(122, 122, 122);
-	cv::Scalar green(0, 256, 0);
-	cv::Scalar red(0, 0, 256);
+	cv::Scalar green(0, 255, 0);
+	cv::Scalar red(0, 0, 255);
 
 	for (int i = 0; i < tileColor.size(); i++)
 	{
@@ -135,7 +135,6 @@ int main() {
 	}
 
 	RtMidiOut* midiout = 0;
-	std::vector<unsigned char> message;
 
 	// RtMidiOut constructor
 	try {
@@ -201,9 +200,9 @@ int main() {
 	createAndSetTrackbar("Lower Value", "Set HSV", obj[5], 255);
 
 	cv::Scalar grey(122, 122, 122);
-	cv::Scalar green(0, 256, 0);
-	cv::Scalar red(0, 0, 256);
-	cv::Scalar white(256, 256, 256);
+	cv::Scalar green(0, 255, 0);
+	cv::Scalar red(0, 0, 255);
+	cv::Scalar white(255, 255, 255);
 
 	std::vector<cv::Scalar> patColor(5, grey);
 	std::vector<cv::Scalar> trkColor(4, grey);
@@ -251,16 +250,14 @@ int main() {
 
 		cv::Scalar upperHsv(u_hue, u_saturation, u_value);
 		cv::Scalar lowerHsv(l_hue, l_saturation, l_value);
-		cv::Mat element = cv::getStructuringElement(0, cv::Size(5, 5));
+		cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
 
 		cv::cvtColor(mask, mask, cv::COLOR_BGR2HSV);
 		cv::inRange(mask, lowerHsv, upperHsv, mask);
 
-		//erosion_type = MORPH_RECT
 		cv::erode(mask, mask, element);
 
-		//morph_type = Opening
-		cv::morphologyEx(mask, mask, 0, element);
+		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, element);
 
 		//dilation_type = MORPH_RECT
 		cv::dilate(mask, mask, element);
@@ -357,8 +354,8 @@ int main() {
 		}
 
 		// Display
-		imshow("Display Mask", mask);
-		imshow("Display Cam", image);
+		cv::imshow("Display Mask", mask);
+		cv::imshow("Display Cam", image);
 		int key = (cv::waitKey(25) & 0xFF);
 		// Press 'q' to quit
 		if (key == 'q')
