@@ -26,6 +26,8 @@ static bool chooseMidiPort(RtMidiOut* rtmidi)
 
 	if (nPorts == 1) {
 		std::cout << "\nOpening " << rtmidi->getPortName() << std::endl;
+		rtmidi->openPort(0);
+		return true;
 	}
 	else {
 		for (i = 0; i < nPorts; i++) {
