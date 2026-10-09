@@ -134,7 +134,8 @@ int main() {
 
 	if (!cap.isOpened())
 	{
-		std::cout << "Cannot open camera";
+		std::cerr << "Error: Cannot open camera" << std::endl;
+		return EXIT_FAILURE;
 	}
 
 	RtMidiOut* midiout = 0;
@@ -220,6 +221,7 @@ int main() {
 	while (true)
 	{
 		cap >> image;
+		if (image.empty()) continue;
 		image.copyTo(mask);
 		cv::flip(image, image, 1);
 		cv::flip(mask, mask, 1);
