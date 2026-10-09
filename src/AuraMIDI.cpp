@@ -94,9 +94,9 @@ static void createAndSetTrackbar(const cv::String& trackbarname, const cv::Strin
 	cv::setTrackbarPos(trackbarname, winname, value);
 }
 
-static int maxContour(std::vector<std::vector<cv::Point>>& contours)
+static size_t maxContour(std::vector<std::vector<cv::Point>>& contours)
 {
-	int maxAreaIndex = 0;
+	size_t maxAreaIndex = 0;
 	for (size_t i = 0; i < contours.size(); i++)
 	{
 		if (cv::contourArea(contours[i]) > cv::contourArea(contours[maxAreaIndex]))
@@ -280,7 +280,7 @@ int main() {
 
 		if (contours.size() > 0)
 		{
-			int contour_index = maxContour(contours);
+			size_t contour_index = maxContour(contours);
 			std::vector<cv::Point> cnt = contours[contour_index];
 
 			cv::Point2f center;
