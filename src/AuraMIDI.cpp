@@ -265,8 +265,6 @@ int main() {
 		cv::cvtColor(mask, mask, cv::COLOR_BGR2HSV);
 		cv::inRange(mask, lowerHsv, upperHsv, mask);
 
-		cv::erode(mask, mask, element);
-
 		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, element);
 
 		cv::dilate(mask, mask, element);
