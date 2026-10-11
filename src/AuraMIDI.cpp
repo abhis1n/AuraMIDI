@@ -211,8 +211,6 @@ int main() {
 	createAndSetTrackbar("Lower Value", "Set HSV", obj[5], 255);
 
 	cv::Scalar grey(122, 122, 122);
-	cv::Scalar green(0, 255, 0);
-	cv::Scalar red(0, 0, 255);
 	cv::Scalar white(255, 255, 255);
 
 	std::vector<cv::Scalar> patColor(5, grey);
@@ -271,7 +269,6 @@ int main() {
 
 		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, element);
 
-		//dilation_type = MORPH_RECT
 		cv::dilate(mask, mask, element);
 
 		// Find contours
