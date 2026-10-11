@@ -185,18 +185,18 @@ int main() {
 		return EXIT_FAILURE;
 	}
 
-	if (!data.contains("highlighter") || !data["highlighter"].is_array())
+	if (!data.contains("object") || !data["object"].is_array())
 	{
-		std::cerr << "Error: 'assets/object.json' is missing a valid 'highlighter' array" << std::endl;
+		std::cerr << "Error: 'assets/object.json' is missing a valid 'object' array" << std::endl;
 		delete midiout;
 		return EXIT_FAILURE;
 	}
 
-	std::vector<int> obj = data["highlighter"].get<std::vector<int>>();
+	std::vector<int> obj = data["object"].get<std::vector<int>>();
 
 	if (obj.size() < 6)
 	{
-		std::cerr << "Error: 'highlighter' array must have at least 6 elements (got " << obj.size() << ")" << std::endl;
+		std::cerr << "Error: 'object' array must have at least 6 elements (got " << obj.size() << ")" << std::endl;
 		delete midiout;
 		return EXIT_FAILURE;
 	}
