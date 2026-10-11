@@ -157,6 +157,9 @@ xcopy /E /I /Y "$(ProjectDir)assets" "$(OutDir)assets"</Command>
   <ItemGroup>
     <ClCompile Include="src\AuraMIDI.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\object.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
